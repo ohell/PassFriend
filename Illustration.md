@@ -33,7 +33,7 @@ Cu derives 2 universal strings from the universal passphrase:
 * qm = 55435 (```echo $Ms | sum```)
 
 ### Registration
-1. Cu request Sk to register client_id = “Usman”
+1. Cu request Sk to register client_id = “Usman” over a crypographically secured network connection
 2. Sk verifies that it has no other Usman registered, and responds with service_id = “Service_k_uuid”, Nt = 3, nt = 1.
    - service_id is expected to be unique to the service (e.g. URI). Nt and nt specify the maximum and minimum number of  
    authentication tokens the service will accept. More critical services, e.g. banking, taxes etc should specify higher numbers 
@@ -51,7 +51,7 @@ frequency analysis). Sampling can duplicate indices, and each index list not be 
 acknowledges the receipt to the client.
 
 ### Authentication
-1. Cu requests Sk to authenticate user Usman
+1. Cu requests Sk to authenticate user Usman over a crypographically secured network connection
 2. Sk verifies that Usman is a registered user, and selects a token pair (Cj, Rj) from the LRU cache of corresponding 
 credentials. Transmits Cj= DE81DB84D99E74F5 and service_id=Service_k_uuid to Cu
 3. Cu transmits the appropriate response to the challenge Cj:
