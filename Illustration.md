@@ -63,15 +63,14 @@ credentials. Transmits Cj= DE81DB84D99E74F5 and service_id=Service_k_uuid to Cu
 
 ## Notes
 1. The challenge and response both cannot be constructed without the master passphrase 
-2. The use of service_id ensures that the same challenge requires a different response from different services
-3. If multiple users have selected the same master passphrase, use of client_id ensures that server is not aware of this
-4. If an interloper tries to deduce the master passphrase by impersonating a server, the challenges will be declined because 
+2. If multiple users have selected the same master passphrase, use of client_id ensures that server is not aware of this
+3. If an interloper tries to deduce the master passphrase by impersonating a server, the challenges will be declined because 
 checksum of index list will not match
-5. Response construction utilises interlace operation to combine three strings as countermeasure against attempts to infer 
+4. Response construction utilises interlace operation to combine three strings as countermeasure against attempts to infer 
 portions of the master passphrase via rainbow tables
-6. If a service gets compromised and credentials are leaked, the user’s credentials are compromised only on that service. Other 
-services are not affected because challenge and response can not be deciphered without client’s master passphrase
-7. The protocol mandates interactive clients implementation to support two modes of operation, trusted and untrusted:
+5. If a service gets compromised and credentials are leaked, the user’s credentials are compromised only on that service. Other 
+services are not affected because the same challenge from different services authenticates with different responses. 
+6. The protocol mandates interactive clients implementation to support two modes of operation, trusted and untrusted:
    - The illustration above assumes that the user is able to trust the client implementation to securely store her master 
    password, allowing automated negotiation for authentication as well as registrations.
    - User is also able to securely authenticate on untrusted client implementations (e.g. on computers in Internet cafes): the 
