@@ -25,8 +25,9 @@ There is also no provision to authenticate the server - it is possible for an im
 # Concepts 
 1. The key concept ensuring the security of transactions under this protocol is Obfuscation (aka hashing), This is a function that deterministically maps any given sequence to another fixed-length sequence such that the there is no operation to recover the original sequence from the obfuscated sequence.  i.e. |Oi(s)| = i,  s1 = s2 => Oi(s1) = Oi(s2). There does not exist any O’ s.t. O’(Oi(s)) = s. 
 2. Obfuscation can be reversible if the operation uses an unrelated sequence to derive the obfuscated sequence, and the same key can be used to map the obfuscated sequence to the original sequence (e.g. XOR). i.e. s1 = s2 <=> P(s1, sk) = P(s2, sk) and there exists at least one Q s.t. Q(P(is, sk), sk) = si
-3. Judicious sampling is the operation to select a given number of symbols (duplicates permitted) from a sequence subject to the constraint that the distribution of the symbols in the selected subsequence is wider than the distribution of symbols in the sampled sequence. J(s, m) = r, |r| = min(m, |s|), and if H denotes the entropy of a distribution, for all k, j, H(s[rj] | s[r[1…j-1]]) >= H(s[k] | s[1…k-1]) 
-4. Checksum of a sequence is similar to obfuscation, but the operation cj, with j being the length of the checksum, is chosen such that P(cj(s1) == cj(s2) | s1 <> s2) —> 0 as j —> min(|s1|, |s2|)
+3. Checksum of a sequence is similar to obfuscation, but the operation cj, with j being the length of the checksum, is chosen such that P(cj(s1) == cj(s2) | s1 <> s2) —> 0 as j —> min(|s1|, |s2|)
+4. Judicious sampling is the operation to select a given number of elements from a sequence subject to the constraint that the distribution of the symbols in the selected subsequence is wider than the distribution of symbols in the sampled sequence  (duplicates permitted). J(s, m) = r, |r| = m, and if H denotes the entropy of a distribution,  
+for all k, j H(s[rj] | s[r[1…j-1]]) >= H(s[k] | s[1…k-1]) 
 5. Interlacing is the operation to combine k sequences into a single sequence such that the jth element of each sequence is placed after the first j-1 elements of all sequences. i.e. Int(s1…sk) = f where f[j] = sb[j/k], b = j%k. Interlacing is useful to counter attempts to infer the hashed text by use of rainbow tables.
 
 # Protocol 
