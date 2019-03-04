@@ -46,9 +46,9 @@ There is also no provision to authenticate the server - it is possible for an im
 1. Client initiates the authentication transaction by transmitting its client_id  (and optionally the service_id) to the server
 2. Server finds the appropriate stored credentials for the client_id, and select a token Ti = (Ct, Rt) from the list of tokens stored as credentials, and transmits (service_id, Ct) as challenge to the client
 3. Upon receipt of C’t, client validates the server and transmits a response following this strategy:
-   1.	Invert the obfuscation Q(C’t, qm) = It+Its
-   2.	If Its <> ck(It), abort transaction because server can’t be trusted
-   3.	Construct the response token R’t = Ok(Int(client_id,Ms[It],service_id))
+   a. Invert the obfuscation Q(C’t, qm) = It+Its
+   b. If Its <> ck(It), abort transaction because server can’t be trusted
+   c. Construct the response token R’t = Ok(Int(client_id,Ms[It],service_id))
 4. Server authenticates the client if Rt = R’t and transmits the authentication success to the client
 5. Obsolescence: Server can respond to the authentication request with an indication that the stored credentials are no longer valid
    * Server responds with an ‘obsolete’ response accompanied by the current service_id and the maximum and minimum number of challenge-response tokens it expects, Nt and nt
