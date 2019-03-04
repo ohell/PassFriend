@@ -28,9 +28,9 @@ the PassFriend client Cu running on his computer.  For any supported service Sk,
 would proceed as follows:
 
 Cu derives 2 universal strings from the universal passphrase:
-M = "My universal passphrase"
-Ms = Myuniversalpassphrase (```echo $M | sed -E 's/[^[:alnum:]]//g’```)
-qm = 55435 (```echo $Ms | sum```)
+* M = "My universal passphrase"
+* Ms = Myuniversalpassphrase (```echo $M | sed -E 's/[^[:alnum:]]//g’```)
+* qm = 55435 (```echo $Ms | sum```)
 
 ### Registration
 1. Cu request Sk to register client_id = “Usman”
