@@ -31,7 +31,6 @@ Cu derives 2 universal strings from the universal passphrase:
 * M = "My universal passphrase"
 * Ms = Myuniversalpassphrase (```echo $M | sed -E 's/[^[:alnum:]]//g’```)
 * qm = 55435 (```echo $Ms | sum```)
-* qk = PKDF2(qm)
 
 ### Registration
 1. Cu request Sk to register client_id = “Usman” over a crypographically secured network connection
@@ -45,7 +44,8 @@ frequency analysis). Sampling can duplicate indices, and each index list not be 
    subsequences.
    - Make challenge tokens by representing indices as 2 hex numbers and appending respective checksums: 060a030f0115_ac7e, 
    0f011506030a_1f93  
-   and symmetrically encrypt with key qk (maybe using Twofish): C1 = DE81DB84D99E74F5 and C2 = D78ACD8DDB81C718
+   - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = PBKDF2("55435UsmanService_k_uuid")
+   and symmetrically encrypt the sequences with qkey (maybe using Twofish): C1 = DE81DB84D99E74F5 and C2 = D78ACD8DDB81C718
    - Make response tokens by interlacing service_id and client_id with subsequences, and computing cryptographic hashes:  
    R1 = H(UvSsaemurasvnMiece_k_uuid) and R2 = H(UsSsMemeravvnuiace_k_uuid)
 4. Cu transmits token pairs (C1, R1) and (C2, R2) to the server. Server stores these as credentials for user Usman and 
@@ -56,7 +56,8 @@ acknowledges the receipt to the client.
 2. Sk verifies that Usman is a registered user, and selects a token pair (Cj, Rj) from the LRU cache of corresponding 
 credentials. Transmits Cj= DE81DB84D99E74F5 and service_id=Service_k_uuid to Cu
 3. Cu transmits the appropriate response to the challenge Cj:
-   - Decrypt Cj with key qk to get 060a030f0115ac7e
+   - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = PBKDF2("55435UsmanService_k_uuid")
+   - Decrypt Cj with key qkey to get 060a030f0115ac7e
    - Verify that last 2 bytes (ac7e) is the checksum for the indices string (060a030f0115). If not, abort authentication.
    - Construct subsequence by sampling Ms at index list denoted by bytes in the string [6, 10, 3, 15, 1, 21]: vausMe
    - R’j = H(UvSsaemurasvnMiece_k_uuid)
