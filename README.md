@@ -38,7 +38,7 @@ for all k, j H(s[rj] | s[r[1…j-1]]) >= H(s[k] | s[1…k-1])
    1. Generate a short checksum from the master sequence  qm = ck(Ms)
    2. Select a token length L at random between min and max token sequence lengths lt and Lt (lt is chosen for sufficiently large number of possible sequences, Lt for the ease of input) 
    3. Generate a sequence pair (It, St) where It = J(Ms, L) contains L indices in the client’s master sequence Ms and St = Ms[It]
-   4. Construct the challenge token Ct = P(It+ck(It), qm). i.e. reversible obfuscation of the It appended with its checksum, with qm as key.
+   4. Construct the challenge token Ct = P(It+ck(It), key(qm, client_id, service_id)). i.e. reversible obfuscation of the It appended with its checksum, with key derived from qm, client_id and service_id.
    5. Construct the response token Rt = Ok(Int(client_id,St,service_id)) i.e. obfuscation of St, client_id & server_id. k should be reasonably large to avoid collisions
    6. Token Ti = (Ct, Rt)
 4. Server stores the client_id and the list of tokens as client credentials, and transmits the registration success to the client
@@ -47,7 +47,7 @@ for all k, j H(s[rj] | s[r[1…j-1]]) >= H(s[k] | s[1…k-1])
 1. Client initiates the authentication transaction by transmitting its client_id  (and optionally the service_id) to the server
 2. Server finds the appropriate stored credentials for the client_id, and select a token Ti = (Ct, Rt) from the list of tokens stored as credentials, and transmits (service_id, Ct) as challenge to the client
 3. Upon receipt of C’t, client validates the server and transmits a response following this strategy:
-   1. Invert the obfuscation Q(C’t, qm) = It+Its
+   1. Invert the obfuscation Q(C’t, key(qm, client_id, service_id)) = It+Its
    2. If Its <> ck(It), abort transaction because server can’t be trusted
    3. Construct the response token R’t = Ok(Int(client_id,Ms[It],service_id))
 4. Server authenticates the client if Rt = R’t and transmits the authentication success to the client
