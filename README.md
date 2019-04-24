@@ -34,12 +34,12 @@ There is also no provision to authenticate the server - it is possible for an im
 1. Client initiates the registration transaction by transmitting its desired _client_id_ (and optionally the _service_id_) to the server
 2. Server checks if this registration request is acceptable, and replies either with denial, or consent accompanied by the public service_id and the maximum and minimum number of challenge-response tokens it expects, _N<sup>t</sup>_ and _n<sup>t</sup>_
 3. Upon receipt of consent client transmits to the server a list of <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;N_t&space;\geq&space;N&space;\geq&space;n_t" title="N_t \geq N \geq n_t" align="middle"/> challenge-response tokens generated following this strategy:
-   1. Generate a short checksum from the master sequence  _q<sup>m</sup> = **c<sup>k</sup>**(M<sup>s</sup>)_
+   1. Generate a short checksum from the master sequence  _q<sup>m</sup> = **c<sub>k</sub>**(M<sup>s</sup>)_
    2. Select a token length _L_ at random between min and max token sequence lengths _l<sup>t</sup>_ and _L<sup>t</sup>_ (l<sup>t</sup> is chosen for sufficiently large number of possible sequences, L<sup>t</sup> for the ease of input) 
-   3. Generate a sequence triple _(X<sup>t</sup>, S<sup>t</sup>, z<sup>t</sup>)_ where _X<sup>t</sup> = **J**(M<sup>s</sup>, L)_ contains _L_ indices in the client’s master sequence _M<sup>s</sup>_, _S<sup>t</sup> = M<sup>s</sup>[X<sup>t</sup>]_ and _z<sup>t</sup> = **c<sup>k</sup>**(X<sup>t</sup>)_
+   3. Generate a sequence triple _(X<sup>t</sup>, S<sup>t</sup>, z<sup>t</sup>)_ where _X<sup>t</sup> = **J**(M<sup>s</sup>, L)_ contains _L_ indices in the client’s master sequence _M<sup>s</sup>_, _S<sup>t</sup> = M<sup>s</sup>[X<sup>t</sup>]_ and _z<sup>t</sup> = **c<sub>k</sub>**(X<sup>t</sup>)_
    4. Construct the challenge token _C<sup>t</sup> = **R**(z<sup>t</sup> + X<sup>t</sup>, **key**(q<sup>m</sup>, client_id, service_id))_, i.e. reversible obfuscation of the _I<sup>t</sup>_ prepended with its checksum, with key derived from _q<sup>m</sup>_, _client_id_ and _service_id_.
-   5. Construct the response token _E<sup>t</sup> = **O<sup>k</sup>**(z<sup>t</sup> + Int(client_id, S<sup>t</sup>, service_id))_ i.e. obfuscation of _S<sup>t</sup>, client_id & server_id_. k should be reasonably large to avoid collisions
-   6. Token _T<sup>i</sup> = (C<sup>t</sup>, E<sup>t</sup>)_
+   5. Construct the response token _E<sup>t</sup> = **O<sup>k</sup>**(z<sup>t</sup> + Int(client_id, S<sup>t</sup>, service_id))_ i.e. obfuscation of _S<sup>t</sup>, client_id & server_id_. _k_ should be reasonably large to avoid collisions
+   6. Token _T<sup>i</sup> = &lt;C<sup>t</sup>, E<sup>t</sup>&gt;_
 4. Server stores the _client_id_ and the list of tokens as client credentials, and transmits the registration success to the client
 
 ## Authentication:
@@ -47,11 +47,11 @@ There is also no provision to authenticate the server - it is possible for an im
 2. Server finds the appropriate stored credentials for the client_id, and selects a token _T = (C<sup>t</sup>, E<sup>t</sup>)_ from the list of tokens stored as credentials, and transmits _(service_id, C<sup>t</sup>)_ as challenge to the client
 3. Upon receipt of C<sup>t</sup>, client validates the server and transmits a response following this strategy:
    1. Invert the obfuscation _**R'**(C<sup>t</sup>, key(q<sup>m</sup>, client_id, service_id)) = z<sup>t</sup> + X<sup>t</sup>_
-   2. If _z<sup>t</sup> <> **c<sup>k</sup>**(X<sup>t</sup>)_, abort transaction because server can’t be trusted
+   2. If _z<sup>t</sup> <> **c<sub>k</sub>**(X<sup>t</sup>)_, abort transaction because server can’t be trusted
    3. Construct the response token _E’<sup>t</sup> = **O<sup>k</sup>**(Int(client_id,Ms[X<sup>t</sup>],service_id))_
 4. Server authenticates the client if _E'<sup>t</sup> = E<sup>t</sup>_ and transmits the authentication success to the client
 5. Obsolescence: Server can respond to the authentication request with an indication that the stored credentials are no longer valid
-   * Server responds with an <u>obsolete</u> response accompanied by the current _service_id_ and the maximum and minimum number of challenge-response tokens it expects, _N<sup>t</sup>_ and _n<sup>t</sup>_
+   * Server responds with an "obsolete" response accompanied by the current _service_id_ and the maximum and minimum number of challenge-response tokens it expects, _N<sup>t</sup>_ and _n<sup>t</sup>_
    * Client has the option of abandoning the authentication attempt, or continue Registration step 3
 
 ## Deregister:
