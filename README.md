@@ -38,7 +38,7 @@ There is also no provision to authenticate the server - it is possible for an im
    2. Select a token length _L_ at random between min and max token sequence lengths _L<sub>o</sub>_ and _L<sub>x</sub>_ (_L<sub>o</sub>_ is chosen for sufficiently large number of possible sequences, _L<sub>x</sub>_ for the ease of input) 
    3. Generate a sequence triple <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;(\bar{X},\bar{S},\bar{z})" title="(\bar{X},\bar{S},\bar{z})" /> where <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;\bar{X}=J(\bar{M},L)" title="\bar{X}=J(\bar{M},L)" /> contains _L_ indices in the client’s master sequence <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;\bar{M}" title="\bar{M}" />, <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;\bar{S}=\bar{M}_\bar{X}" title="\bar{S}=\bar{M}_\bar{X}" /> and <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;\bar{z}=c^k(\bar{X})" title="\bar{z}=c^k(\bar{X})"/>
    4. Construct the challenge token <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;C_t=R(\bar{z}&plus;\bar{X_t},O^b(q_m,client\_id,service\_id))" title="C_t=R(\bar{z}+\bar{X_t},O^b(q_m,client\_id,service\_id))" />, i.e. reversible obfuscation of the index list prepended with its checksum, with _b_-length key derived from _q<sub>m</sub>_, _client_id_ and _service_id_.
-   5. Construct the response token <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;E_t=O^n(\bar{z}&plus;Int(client\_id,\bar{S},service\_id))" title="E_t=O^n(\bar{z}+Int(client\_id,\bar{S},service\_id))" /> i.e. obfuscation of indexed substring, _client_id & service_id_. _n_ should be reasonably large to avoid collisions
+   5. Construct the response token <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;E_t=O^n(Int(client\_id,\bar{S},service\_id)&plus;\bar{z})" title="E_t=O^n(Int(client\_id,\bar{S},service\_id)+\bar{z})" /> i.e. obfuscation of indexed substring, _client_id & service_id_. _n_ should be reasonably large to avoid collisions
    6. Token _T<sub>t</sub> = &lt;C<sub>t</sub>, E<sub>t</sub>&gt;_
 4. Server stores the _client_id_ and the list of tokens as client credentials, and transmits the registration success to the client
 
@@ -48,10 +48,10 @@ There is also no provision to authenticate the server - it is possible for an im
 3. Upon receipt of C<sub>t</sub>, client validates the server and transmits a response following this strategy:
    1. Invert the obfuscation <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;R'(C_t,O^k(q_m,client\_id,service\_id))=\bar{z}&plus;\bar{X}" title="R'(C_t,O^k(q_m,client\_id,service\_id))=\bar{z}+\bar{X}" />
    2. If <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;\bar{z}\neq&space;c^k(\bar{X})" title="\bar{z}\neq c^k(\bar{X})" />, abort transaction because server can’t be trusted
-   3. Transmit the response token <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;E_t'&space;=&space;O^n(\bar{z}&plus;Int(client\_id,\bar{M}_{\bar{X}}&space;,&space;service\_id))" title="E_t' = O^n(\bar{z}+Int(client\_id,\bar{M}_{\bar{X}} , service\_id))" />
+   3. Transmit the response token <img src="https://latex.codecogs.com/svg.latex?\fn_cm&space;E_t'=O^n(Int(client\_id,\bar{M}_{\bar{X}},service\_id)&plus;\bar{z})" title="E_t'=O^n(Int(client\_id,\bar{M}_{\bar{X}},service\_id)+\bar{z})" />
 4. Server authenticates the client if _E'<sub>t</sub> = E<sub>t</sub>_ and transmits the authentication success to the client
 5. Obsolescence: Server can respond to the authentication request with an indication that the stored credentials are no longer valid
-   * Server responds with an "obsolete" response accompanied by the current _service_id_ and the maximum and minimum number of challenge-response tokens it expects, _N<sup>x</sup>_ and _N<sup>o</sup>_
+   * Server responds with an "obsolete" response accompanied by the current _service_id_ and the maximum and minimum number of challenge-response tokens it expects, _N<sub>x</sub>_ and _N<sub>o</sub>_
    * Client has the option of abandoning the authentication attempt, or continue Registration step 3
 
 ## Deregister:
