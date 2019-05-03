@@ -30,7 +30,7 @@ would proceed as follows:
 Cu derives 2 universal strings from the universal passphrase:
 * M = **"My universal passphrase"**
 * Ms = *Myuniversalpassphrase* (```echo $M | sed -E 's/[^[:alnum:]]//g’```)
-* qm = *fedd1705* (```printf "%x" \`echo $Ms | cksum\` ```)
+* qm = *fedd1705* (```printf "%x" `echo $Ms | cksum` ```)
 
 ### Registration
 1. Cu request Sk to register client_id = *Usman* over a crypographically secured network connection
