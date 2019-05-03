@@ -35,8 +35,7 @@ Cu derives 2 universal strings from the universal passphrase:
 ### Registration
 1. Cu request Sk to register client_id = *Usman* over a crypographically secured network connection
 2. Sk verifies that it has no other Usman registered, and responds with service_id = *Service_k_uuid*, Nt = 3, nt = 1.
-   - service_id is expected to be unique to the service (e.g. URI). Nt and nt specify the maximum and minimum number of  
-   authentication tokens the service will accept. More critical services, e.g. banking, taxes etc should specify higher numbers 
+   - service_id is expected to be unique to the service (e.g. URI). Nt and nt specify the maximum and minimum number of authentication tokens the service will accept. More critical services, e.g. banking, taxes etc should specify higher numbers 
 3. Cu generates 2 auth tokens by sampling Ms non-randomly (random sampling will render sampled tokens susceptible to 
 frequency analysis). Sampling can duplicate indices, and each index list need not have the same length.
    - choose index list [1,3,6,10,15,21] and for illustration purposes randomly permute it twice to get [6,10,3,15,1,21] and 
