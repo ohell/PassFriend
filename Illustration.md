@@ -28,39 +28,39 @@ the PassFriend client Cu running on his computer.  For any supported service Sk,
 would proceed as follows:
 
 Cu derives 2 universal strings from the universal passphrase:
-* M = "My universal passphrase"
-* Ms = Myuniversalpassphrase (```echo $M | sed -E 's/[^[:alnum:]]//g’```)
-* qm = 55435 (```echo $Ms | sum```)
+* M = **"My universal passphrase"**
+* Ms = *Myuniversalpassphrase* (```echo $M | sed -E 's/[^[:alnum:]]//g’```)
+* qm = *fedd1705* (```printf "%x" \`echo $Ms | cksum\` ```)
 
 ### Registration
-1. Cu request Sk to register client_id = “Usman” over a crypographically secured network connection
-2. Sk verifies that it has no other Usman registered, and responds with service_id = “Service_k_uuid”, Nt = 3, nt = 1.
+1. Cu request Sk to register client_id = *Usman* over a crypographically secured network connection
+2. Sk verifies that it has no other Usman registered, and responds with service_id = *Service_k_uuid*, Nt = 3, nt = 1.
    - service_id is expected to be unique to the service (e.g. URI). Nt and nt specify the maximum and minimum number of  
    authentication tokens the service will accept. More critical services, e.g. banking, taxes etc should specify higher numbers 
 3. Cu generates 2 auth tokens by sampling Ms non-randomly (random sampling will render sampled tokens susceptible to 
 frequency analysis). Sampling can duplicate indices, and each index list not be of the same length.
    - choose index list [1,3,6,10,15,21] and for illustration purposes randomly permute it twice to get [6,10,3,15,1,21] and 
-   [15,1,21,6,3,10]. Corresponding subsequences are vausMe and sMevua. Cu could choose index lists to ensure distinct 
+   [15,1,21,6,3,10]. Corresponding subsequences are *vausMe* and *sMevua*. Cu could choose index lists to ensure distinct 
    subsequences.
-   - Make challenge tokens by representing indices as 2 hex numbers and appending respective checksums: 060a030f0115_ac7e, 
-   0f011506030a_1f93  
-   - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = PBKDF2("55435UsmanService_k_uuid")
-   and symmetrically encrypt the sequences with qkey (maybe using Twofish): C1 = DE81DB84D99E74F5 and C2 = D78ACD8DDB81C718
+   - Make challenge tokens by representing indices as 2 hex numbers and appending respective checksums: *060a030f0115:ac7e*, 
+   *0f011506030a:1f93*  
+   - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = **PBKDF2**(*fedd1705UsmanService_k_uuid*)
+   and symmetrically encrypt the sequences with qkey (maybe using Twofish): C1 = *DE81DB84D99E74F5* and C2 = *D78ACD8DDB81C718*
    - Make response tokens by interlacing service_id and client_id with subsequences, and computing cryptographic hashes:  
-   R1 = H(UvSsaemurasvnMiece_k_uuid) and R2 = H(UsSsMemeravvnuiace_k_uuid)
+   R1 = **SHA2**(UvSsaemurasvnMiece_k_uuid:ac7e) and R2 = **SHA2**(*UsSsMemeravvnuiace_k_uuid:1f93**)
 4. Cu transmits token pairs (C1, R1) and (C2, R2) to the server. Server stores these as credentials for user Usman and 
 acknowledges the receipt to the client.
 
 ### Authentication
 1. Cu requests Sk to authenticate user Usman over a crypographically secured network connection
 2. Sk verifies that Usman is a registered user, and selects a token pair (Cj, Rj) from the LRU cache of corresponding 
-credentials. Transmits Cj= DE81DB84D99E74F5 and service_id=Service_k_uuid to Cu
+credentials. Transmits Cj = *DE81DB84D99E74F5* and service_id = *Service_k_uuid* to Cu
 3. Cu transmits the appropriate response to the challenge Cj:
-   - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = PBKDF2("55435UsmanService_k_uuid")
-   - Decrypt Cj with key qkey to get 060a030f0115ac7e
-   - Verify that last 2 bytes (ac7e) is the checksum for the indices string (060a030f0115). If not, abort authentication.
-   - Construct subsequence by sampling Ms at index list denoted by bytes in the string [6, 10, 3, 15, 1, 21]: vausMe
-   - R’j = H(UvSsaemurasvnMiece_k_uuid)
+   - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = **PBKDF2**(*fedd1705UsmanService_k_uuid*)
+   - Decrypt Cj with key qkey to get 060a030f0115:ac7e
+   - Verify that the part after the last delimiter (*ac7e*) is the checksum for the indices string (*060a030f0115*). If not, abort authentication.
+   - Construct subsequence by sampling Ms at index list denoted by bytes in the string [6, 10, 3, 15, 1, 21]: *vausMe*
+   - R’j = **SHA2**(*UvSsaemurasvnMiece_k_uuid:ac7e*)
 4. Sk authenticates Usman if R’j = Rj and starts the transaction with Cu
 
 ## Notes
@@ -69,7 +69,7 @@ credentials. Transmits Cj= DE81DB84D99E74F5 and service_id=Service_k_uuid to Cu
 3. If an interloper tries to deduce the master passphrase by impersonating a server, the challenges will be declined because 
 checksum of index list will not match
 4. Response construction utilises interlace operation to combine three strings as countermeasure against attempts to infer 
-portions of the master passphrase via rainbow tables
+portions of the master passphrase via related-key attacks. Appended checksum for the challenge string ensures response tokens are different even for identical sampled subsequences.
 5. If a service gets compromised and credentials are leaked, the user’s credentials are compromised only on that service. Other 
 services are not affected because the same challenge from different services authenticates with different responses. 
 6. The protocol mandates interactive clients implementation to support two modes of operation, trusted and untrusted:
