@@ -45,8 +45,8 @@ frequency analysis). Sampling can duplicate indices, and each index list need no
    *0f011506030a:1f93*  
    - Make encryption key qkey from qm, client_id, service_id, e.g. qkey = **PBKDF2**(*fedd1705UsmanService_k_uuid*)
    and symmetrically encrypt the sequences with qkey (maybe using Twofish): C1 = *DE81DB84D99E74F5* and C2 = *D78ACD8DDB81C718*
-   - Make response tokens by interlacing service_id and client_id with subsequences, and computing cryptographic hashes:  
-   R1 = **SHA2**(UvSsaemurasvnMiece_k_uuid:ac7e) and R2 = **SHA2**(*UsSsMemeravvnuiace_k_uuid:1f93**)
+   - Make response tokens by interlacing service_id and client_id with subsequences, appending index-list checksums, and computing cryptographic hashes:  
+   R1 = **SHA2**(*UvSsaemurasvnMiece_k_uuid:ac7e*) and R2 = **SHA2**(*UsSsMemeravvnuiace_k_uuid:1f93*)
 4. Cu transmits token pairs (C1, R1) and (C2, R2) to the server. Server stores these as credentials for user Usman and 
 acknowledges the receipt to the client.
 
